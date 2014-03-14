@@ -16,7 +16,7 @@ class Grid
     new_grid = Grid.new(width, height)
     width.times do |i|
       height.times do |j|
-        new_grid.population[[i,j]] = Cell.new
+        new_grid.population[[i+1,j+1]] = Cell.new
       end
     end
     new_grid
@@ -27,7 +27,7 @@ class Grid
     (x-1).upto(x+1) do |loop_x|
       (y-1).upto(y+1) do |loop_y|
 
-        if @population[[loop_x,loop_y]].state == true
+        if @population[wrap_universe(loop_x,loop_y)].state == true
           counter +=1
         end
       end
@@ -51,13 +51,23 @@ class Grid
       this_cell.future_state = true
     end
   end
+
+  def wrap_universe(x,y)
+    new_coord = [x,y]
+    if x == 0
+      new_coord[0] =  @width
+    end
+    if y == 0
+      new_coord[1] = @height
+    end
+    if x == @width + 1
+      new_coord[0] = 1
+    end
+    if y == @height + 1
+      new_coord[1] = 1
+    end
+    new_coord
+  end
 end
 
-# puts new_grid = Grid.create(10,10)
-# new_grid.population[[1,2]].state = true
-# new_grid.population[[2,1]].state = true
-# new_grid.population[[2,3]].state = true
-# new_grid.population[[3,2]].state = true
-
-# new_grid.set_future_state(2,2)
 

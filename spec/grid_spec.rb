@@ -39,6 +39,16 @@ describe Grid do
       new_grid.population[[3,2]].state = true
       new_grid.live_neighbors(2,2).should eq 4
     end
+    it 'finds out how many neighbors are alive and accounts for a wrapped universe' do
+      new_grid = Grid.create(5,5)
+      new_grid.population[[1,5]].state = true
+      new_grid.live_neighbors(5,5).should eq 1
+    end
+    it 'finds out how many neighbors are alive and accounts for a wrapped universe' do
+      new_grid = Grid.create(5,5)
+      new_grid.population[[5,4]].state = true
+      new_grid.live_neighbors(1,4).should eq 1
+    end
   end
 
   describe 'set_future_state' do
@@ -79,6 +89,29 @@ describe Grid do
 
       new_grid.set_future_state(2,2)
       new_grid.population[[2,2]].future_state.should eq true
+    end
+  end
+
+  describe 'wrap_universe' do
+    it 'translates negative coordinates to coordinates on the opposite side of the grid' do
+      new_grid = Grid.create(5,5)
+      new_grid.wrap_universe(1,0).should eq [1,5]
+    end
+    it 'translates negative coordinates to coordinates on the opposite side of the grid' do
+      new_grid = Grid.create(5,5)
+      new_grid.wrap_universe(0,1).should eq [5,1]
+    end
+    it 'translates too large coordinates to 1' do
+      new_grid = Grid.create(5,5)
+      new_grid.wrap_universe(1,6).should eq [1,1]
+    end
+    it 'translates too large coordinates to 1' do
+      new_grid = Grid.create(5,5)
+      new_grid.wrap_universe(6,1).should eq [1,1]
+    end
+    it 'leaves normal coordinates the same' do
+      new_grid = Grid.create(5,5)
+      new_grid.wrap_universe(4,3).should eq [4,3]
     end
   end
 end
